@@ -259,12 +259,12 @@ export abstract class Command extends AkairoModule<CommandHandler, Command> {
 		this.lock =
 			typeof lock === "string"
 				? (
-						{
-							guild: message => message.guild! && message.guild.id!,
-							channel: message => message.channel!.id,
-							user: message => message.author.id
-						} satisfies Record<string, KeySupplier>
-				  )[lock]
+					{
+						guild: message => message.guild! && message.guild.id!,
+						channel: message => message.channel!.id,
+						user: message => message.author.id
+					} satisfies Record<string, KeySupplier>
+				)[lock]
 				: lock;
 		if (this.lock) this.locker = new Set();
 		this.ignoreCooldown = typeof ignoreCooldown === "function" ? ignoreCooldown.bind(this) : ignoreCooldown;
@@ -681,7 +681,7 @@ type GetNonSub<T> = T extends Sub ? never : T & SlashExt;
 export type SlashNonSub = GetNonSub<ApplicationCommandOptionData>;
 
 export interface ExtGroup extends ApplicationCommandSubGroupData {
-	options: readonly ExtSub[];
+	options: ExtSub[];
 }
 
 export interface ExtSub extends ApplicationCommandSubCommandData {
