@@ -1,3 +1,4 @@
+// @ts-ignore
 import auth from "./auth.json" assert { type: "json" };
 import logger from "./struct/Logger.mjs";
 import TestClient from "./struct/TestClient.mjs";
