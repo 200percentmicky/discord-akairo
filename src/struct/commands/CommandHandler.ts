@@ -443,7 +443,7 @@ export class CommandHandler extends AkairoHandler<Command, CommandHandler> {
 			options:
 				interaction.type === ApplicationCommandType.ChatInput
 					? // todo: check if this is okay
-					  (interaction.options as ApplicationCommandOptionData[]) ?? []
+					(interaction.options as ApplicationCommandOptionData[]) ?? []
 					: undefined,
 			defaultMemberPermissions: interaction.defaultMemberPermissions,
 			dmPermission: interaction.dmPermission!,
@@ -683,18 +683,17 @@ export class CommandHandler extends AkairoHandler<Command, CommandHandler> {
 					continue;
 				const originalOption = commandModule.slashOptions?.find(o => o.name === option.name);
 
-				const func = `get${
-					(originalOption && "resolve" in originalOption && originalOption.resolve) ||
+				const func = `get${(originalOption && "resolve" in originalOption && originalOption.resolve) ||
 					(ApplicationCommandOptionType[option.type] as SlashResolveType)
-				}` as const;
+					}` as const;
 
 				// getMember and getChannel have incompatible signatures with the others
 				convertedOptions[option.name] =
 					func === "getMember"
 						? interaction.options.getMember(option.name)
 						: func === "getChannel"
-						? interaction.options.getChannel(option.name, false)
-						: interaction.options[func](option.name, false);
+							? interaction.options.getChannel(option.name, false)
+							: interaction.options[func](option.name, false);
 			}
 
 			// Makes options that are not found to be null so that it matches the behavior normal commands.
@@ -1070,7 +1069,7 @@ export class CommandHandler extends AkairoHandler<Command, CommandHandler> {
 				return true;
 			}
 
-			if (command.onlyNsfw && !("nsfw" in (message.channel ?? {}))) {
+			if (command.onlyNsfw && ("nsfw" in (message.channel ?? {}))) {
 				this.emit(event, message, command, BuiltInReasons.NOT_NSFW);
 				return true;
 			}
@@ -1134,8 +1133,8 @@ export class CommandHandler extends AkairoHandler<Command, CommandHandler> {
 			const isIgnored = Array.isArray(ignorer)
 				? ignorer.includes(message.author.id)
 				: typeof ignorer === "function"
-				? ignorer(message, command)
-				: message.author.id === ignorer;
+					? ignorer(message, command)
+					: message.author.id === ignorer;
 
 			if (!isIgnored) {
 				if (typeof command.userPermissions === "function") {
@@ -1171,8 +1170,8 @@ export class CommandHandler extends AkairoHandler<Command, CommandHandler> {
 		const isIgnored = Array.isArray(ignorer)
 			? ignorer.includes(id)
 			: typeof ignorer === "function"
-			? ignorer(message, command)
-			: id === ignorer;
+				? ignorer(message, command)
+				: id === ignorer;
 
 		if (isIgnored) return false;
 
@@ -1228,8 +1227,8 @@ export class CommandHandler extends AkairoHandler<Command, CommandHandler> {
 		const typing =
 			command.typing || this.typing
 				? setInterval(() => {
-						if (command.typing || this.typing) message.channel.sendTyping();
-				  }, 9000)
+					if (command.typing || this.typing) message.channel.sendTyping();
+				}, 9000)
 				: undefined;
 
 		try {
@@ -1733,15 +1732,15 @@ export const SlashResolveType = z.enum([
 
 type ConvertedOptionsType = {
 	[key: string]:
-		| string
-		| boolean
-		| number
-		| null
-		| NonNullable<CommandInteractionOption["channel"]>
-		| NonNullable<CommandInteractionOption["user"]>
-		| NonNullable<CommandInteractionOption["member"]>
-		| NonNullable<CommandInteractionOption["role"]>
-		| NonNullable<CommandInteractionOption["member" | "role" | "user"]>
-		| NonNullable<CommandInteractionOption["message"]>
-		| NonNullable<CommandInteractionOption["attachment"]>;
+	| string
+	| boolean
+	| number
+	| null
+	| NonNullable<CommandInteractionOption["channel"]>
+	| NonNullable<CommandInteractionOption["user"]>
+	| NonNullable<CommandInteractionOption["member"]>
+	| NonNullable<CommandInteractionOption["role"]>
+	| NonNullable<CommandInteractionOption["member" | "role" | "user"]>
+	| NonNullable<CommandInteractionOption["message"]>
+	| NonNullable<CommandInteractionOption["attachment"]>;
 };
