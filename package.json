@@ -42,7 +42,7 @@
 		"build": "yarn tsc --build",
 		"build:no-emit": "yarn tsc --noEmit",
 		"build:clean": "yarn rimraf dist && yarn build",
-		"prepare": "yarn build:clean",
+		"prepare": "yarn install && yarn build:clean",
 		"prepublishOnly": "yarn test:all && yarn build:no-emit"
 	},
 	"dependencies": {
