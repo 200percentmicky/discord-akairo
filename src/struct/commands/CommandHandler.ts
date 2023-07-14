@@ -1069,7 +1069,7 @@ export class CommandHandler extends AkairoHandler<Command, CommandHandler> {
 				return true;
 			}
 
-			if (command.onlyNsfw && ("nsfw" in (message.channel ?? {}))) {
+			if (command.onlyNsfw && !("nsfw" in (message.channel ?? {}))) {
 				this.emit(event, message, command, BuiltInReasons.NOT_NSFW);
 				return true;
 			}
