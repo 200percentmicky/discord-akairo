@@ -44,10 +44,7 @@
 		"build:no-emit": "yarn tsc --noEmit",
 		"build:clean": "yarn rimraf dist && yarn build",
 		"prepare": "yarn install && yarn build:clean",
-		"prepublishOnly": "yarn test:all && yarn build:no-emit",
-		"postinstall": "husky install",
-		"prepack": "pinst --disable",
-		"postpack": "pinst --enable"
+		"prepublishOnly": "yarn test:all && yarn build:no-emit"
 	},
 	"dependencies": {
 		"zod": "^3.22.4"
