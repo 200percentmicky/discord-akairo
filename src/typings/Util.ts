@@ -1,14 +1,14 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {
 	BitField,
 	Message,
 	MessagePayload,
 	PermissionFlagsBits,
-	PermissionResolvable,
-	PermissionsString,
-	type MessageCreateOptions
+	type MessageCreateOptions,
+	type OmitPartialGroupDMChannel,
+	type PermissionResolvable,
+	type PermissionsString
 } from "discord.js";
-import { ZodLiteral, ZodType, ZodUnion, z, type ZodTypeAny } from "zod";
+import { z, type ZodLiteral, type ZodType, type ZodTypeAny, type ZodUnion } from "zod";
 import { AkairoMessage } from "../util/AkairoMessage.js";
 
 type MakeConstructable<T> = new (...args: any[]) => T;
@@ -33,7 +33,10 @@ const BigIntBitFieldInstance = z.instanceof(BitField as MakeConstructable<BitFie
 
 const BigIntStr = z.string().regex(/^\d*$/) as unknown as ZodLiteral<`${bigint}`>;
 
-export type MessageUnion = Message | AkairoMessage;
+export type TextCommandMessage = OmitPartialGroupDMChannel<Message>;
+export type SlashCommandMessage = AkairoMessage;
+
+export type MessageUnion = TextCommandMessage | SlashCommandMessage;
 export const MessageUnion = z.union([MessageInstance, z.instanceof(AkairoMessage)]);
 
 /**
