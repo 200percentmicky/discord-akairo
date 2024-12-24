@@ -1,3 +1,4 @@
+// @ts-expect-error auth.json is ignored
 import auth from "./auth.json" with { type: "json" };
 import logger from "./struct/Logger.mjs";
 import TestClient from "./struct/TestClient.mjs";
