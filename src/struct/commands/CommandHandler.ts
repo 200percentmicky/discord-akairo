@@ -294,29 +294,29 @@ export class CommandHandler extends AkairoHandler<Command, CommandHandler, Comma
 	protected setup() {
 		this.client.once("clientReady", () => {
 			if (this.autoRegisterSlashCommands) this.registerInteractionCommands();
+		});
 
-			this.client.on("messageCreate", async m => {
+		this.client.on("messageCreate", async m => {
+			const message = m.partial ? await m.fetch().catch(() => null) : m;
+			if (!message || !message.channel.isSendable()) return;
+
+			this.handle(m);
+		});
+
+		if (this.handleEdits) {
+			this.client.on("messageUpdate", async (o, m) => {
 				const message = m.partial ? await m.fetch().catch(() => null) : m;
-				if (!message || !message.channel.isSendable()) return;
+				if (!message) return;
+				const original = o.partial ? await o.fetch().catch(() => null) : o;
+				if (!original) return;
+				if (original.content === message.content) return;
 
-				this.handle(m);
+				if (this.handleEdits) this.handle(message);
 			});
-
-			if (this.handleEdits) {
-				this.client.on("messageUpdate", async (o, m) => {
-					const message = m.partial ? await m.fetch().catch(() => null) : m;
-					if (!message) return;
-					const original = o.partial ? await o.fetch().catch(() => null) : o;
-					if (!original) return;
-					if (original.content === message.content) return;
-
-					if (this.handleEdits) this.handle(message);
-				});
-			}
-			this.client.on("interactionCreate", i => {
-				if (i.isChatInputCommand()) this.handleSlash(i);
-				if (i.isAutocomplete()) this.handleAutocomplete(i);
-			});
+		}
+		this.client.on("interactionCreate", i => {
+			if (i.isChatInputCommand()) this.handleSlash(i);
+			if (i.isAutocomplete()) this.handleAutocomplete(i);
 		});
 
 		if (this.commandUtil) {
