@@ -1,7 +1,7 @@
-import type { Message } from "discord.js";
 import { z } from "zod";
+import { type TextCommandMessage } from "../../../typings/Util.js";
 import { AkairoError } from "../../../util/AkairoError.js";
-import { ArgumentMatches } from "../../../util/Constants.js";
+import { ArgumentMatch } from "../../../util/Constants.js";
 import type { ArgumentGenerator, ArgumentGeneratorReturn, Command } from "../Command.js";
 import type { ContentParserResult } from "../ContentParser.js";
 import { Flag, FlagType } from "../Flag.js";
@@ -44,7 +44,7 @@ export class ArgumentRunner {
 	 * @param generator - Argument generator.
 	 */
 	public async run(
-		message: Message,
+		message: TextCommandMessage,
 		parsed: ContentParserResult,
 		generator: OmitThisParameter<ArgumentGenerator>
 	): Promise<Flag | { [args: string]: unknown }> {
@@ -92,17 +92,22 @@ export class ArgumentRunner {
 	 * @param state - Argument handling state.
 	 * @param arg - Current argument.
 	 */
-	public runOne(message: Message, parsed: ContentParserResult, state: ArgumentRunnerState, arg: Argument): Promise<Flag | any> {
+	public runOne(
+		message: TextCommandMessage,
+		parsed: ContentParserResult,
+		state: ArgumentRunnerState,
+		arg: Argument
+	): Promise<Flag | any> {
 		const cases = {
-			[ArgumentMatches.PHRASE]: this.runPhrase,
-			[ArgumentMatches.FLAG]: this.runFlag,
-			[ArgumentMatches.OPTION]: this.runOption,
-			[ArgumentMatches.REST]: this.runRest,
-			[ArgumentMatches.SEPARATE]: this.runSeparate,
-			[ArgumentMatches.TEXT]: this.runText,
-			[ArgumentMatches.CONTENT]: this.runContent,
-			[ArgumentMatches.REST_CONTENT]: this.runRestContent,
-			[ArgumentMatches.NONE]: this.runNone
+			[ArgumentMatch.PHRASE]: this.runPhrase,
+			[ArgumentMatch.FLAG]: this.runFlag,
+			[ArgumentMatch.OPTION]: this.runOption,
+			[ArgumentMatch.REST]: this.runRest,
+			[ArgumentMatch.SEPARATE]: this.runSeparate,
+			[ArgumentMatch.TEXT]: this.runText,
+			[ArgumentMatch.CONTENT]: this.runContent,
+			[ArgumentMatch.REST_CONTENT]: this.runRestContent,
+			[ArgumentMatch.NONE]: this.runNone
 		};
 
 		const runFn = cases[arg.match];
@@ -121,7 +126,7 @@ export class ArgumentRunner {
 	 * @param arg - Current argument.
 	 */
 	public async runPhrase(
-		message: Message,
+		message: TextCommandMessage,
 		parsed: ContentParserResult,
 		state: ArgumentRunnerState,
 		arg: Argument
@@ -169,7 +174,7 @@ export class ArgumentRunner {
 	 * @param arg - Current argument.
 	 */
 	public async runRest(
-		message: Message,
+		message: TextCommandMessage,
 		parsed: ContentParserResult,
 		state: ArgumentRunnerState,
 		arg: Argument
@@ -196,7 +201,7 @@ export class ArgumentRunner {
 	 * @param arg - Current argument.
 	 */
 	public async runSeparate(
-		message: Message,
+		message: TextCommandMessage,
 		parsed: ContentParserResult,
 		state: ArgumentRunnerState,
 		arg: Argument
@@ -237,7 +242,12 @@ export class ArgumentRunner {
 	 * @param state - Argument handling state.
 	 * @param arg - Current argument.
 	 */
-	public runFlag(message: Message, parsed: ContentParserResult, state: ArgumentRunnerState, arg: Argument): Promise<Flag> | any {
+	public runFlag(
+		message: TextCommandMessage,
+		parsed: ContentParserResult,
+		state: ArgumentRunnerState,
+		arg: Argument
+	): Promise<Flag> | any {
 		const names = Array.isArray(arg.flag) ? arg.flag : [arg.flag];
 		if (arg.multipleFlags) {
 			const amount = parsed.flags.filter(flag => names.some(name => name?.toLowerCase() === flag.key.toLowerCase())).length;
@@ -258,7 +268,7 @@ export class ArgumentRunner {
 	 * @param arg - Current argument.
 	 */
 	public async runOption(
-		message: Message,
+		message: TextCommandMessage,
 		parsed: ContentParserResult,
 		state: ArgumentRunnerState,
 		arg: Argument
@@ -290,7 +300,12 @@ export class ArgumentRunner {
 	 * @param state - Argument handling state.
 	 * @param arg - Current argument.
 	 */
-	public runText(message: Message, parsed: ContentParserResult, state: ArgumentRunnerState, arg: Argument): Promise<Flag | any> {
+	public runText(
+		message: TextCommandMessage,
+		parsed: ContentParserResult,
+		state: ArgumentRunnerState,
+		arg: Argument
+	): Promise<Flag | any> {
 		const index = arg.index == null ? 0 : arg.index;
 		const text = parsed.phrases
 			.slice(index, index + arg.limit)
@@ -308,7 +323,7 @@ export class ArgumentRunner {
 	 * @param arg - Current argument.
 	 */
 	public runContent(
-		message: Message,
+		message: TextCommandMessage,
 		parsed: ContentParserResult,
 		state: ArgumentRunnerState,
 		arg: Argument
@@ -330,7 +345,7 @@ export class ArgumentRunner {
 	 * @param arg - Current argument.
 	 */
 	public async runRestContent(
-		message: Message,
+		message: TextCommandMessage,
 		parsed: ContentParserResult,
 		state: ArgumentRunnerState,
 		arg: Argument
@@ -356,7 +371,12 @@ export class ArgumentRunner {
 	 * @param state - Argument handling state.
 	 * @param arg - Current argument.
 	 */
-	public runNone(message: Message, parsed: ContentParserResult, state: ArgumentRunnerState, arg: Argument): Promise<Flag | any> {
+	public runNone(
+		message: TextCommandMessage,
+		parsed: ContentParserResult,
+		state: ArgumentRunnerState,
+		arg: Argument
+	): Promise<Flag | any> {
 		return arg.process(message, "");
 	}
 
